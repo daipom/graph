@@ -113,7 +113,7 @@ def main(
     yaxis_columns: List[str],
     yaxis2_columns: List[str]
 ):
-    dfs = map(lambda path: pd.read_csv(path, encoding=encoding), file_path_list)
+    dfs = map(lambda path: pd.read_csv(path, encoding=encoding, engine="python"), file_path_list)
     # df = pd.read_csv(file_path, encoding=encoding)
     plot(
         dfs,
