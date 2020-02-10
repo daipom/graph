@@ -9,24 +9,34 @@ from typing import List
 
 def create_graph_datalist(
     df: DataFrame,
-    path: str="",
-    is_x_time: bool=True,
-    time_format: str="%m/%d/%Y %H:%M:%S",
-    use_elapsed: bool=False,
-    yaxis_columns: List[str]=None,
-    yaxis2_columns: List[str]=None
+    path: str = "",
+    is_x_time: bool = True,
+    time_format: str = "%m/%d/%Y %H:%M:%S",
+    use_elapsed: bool = False,
+    yaxis_columns: List[str] = None,
+    yaxis2_columns: List[str] = None
 ) -> List[go.Scatter]:
+
+    def strptime(v):
+        return datetime.strptime(v, time_format)
+
     x_values = None
     if is_x_time:
         if use_elapsed:
-            startdatetime = datetime.strptime(df.iloc[0, 0], time_format)
-            x_values = df.iloc[:, 0].apply(lambda d: (datetime.strptime(d, time_format) - startdatetime).total_seconds())
+            start_dt = strptime(df.iloc[0, 0])
+            x_values = df.iloc[:, 0].apply(
+                lambda d: (strptime(d) - start_dt).total_seconds()
+            )
         else:
-            x_values = df.iloc[:, 0].apply(lambda d: datetime.strptime(d, time_format))
+            x_values = df.iloc[:, 0].apply(
+                lambda d: strptime(d)
+            )
     else:
         x_values = df.iloc[:, 0]
 
-    if (yaxis_columns is None or not any(yaxis_columns)) and (yaxis2_columns is None or not any(yaxis2_columns)):
+    is_col1_empty = yaxis_columns is None or not any(yaxis_columns)
+    is_col2_empty = yaxis2_columns is None or not any(yaxis2_columns)
+    if is_col1_empty and is_col2_empty:
         return [
             go.Scatter(
                 x=x_values,
@@ -57,14 +67,14 @@ def create_graph_datalist(
 def plot(
     dfs: List[DataFrame],
     pathlist: List[str],
-    is_x_time: bool=True,
-    time_format: str="%m/%d/%Y %H:%M:%S",
-    to_jupyter: bool=False,
-    use_elapsed: bool=False,
-    yaxis_title: str="Bytes",
-    yaxis2_title: str="",
-    yaxis_columns: List[str]=None,
-    yaxis2_columns: List[str]=None
+    is_x_time: bool = True,
+    time_format: str = "%m/%d/%Y %H:%M:%S",
+    to_jupyter: bool = False,
+    use_elapsed: bool = False,
+    yaxis_title: str = "Bytes",
+    yaxis2_title: str = "",
+    yaxis_columns: List[str] = None,
+    yaxis2_columns: List[str] = None
 ):
     data = []
     for df, path in zip(dfs, pathlist):
@@ -85,7 +95,9 @@ def plot(
             xaxis=dict(title="Elapsed [sec]" if use_elapsed else "X"),
             yaxis=dict(title=yaxis_title, exponentformat="SI"),
             yaxis2=dict(
-                title=yaxis2_title if yaxis2_columns is not None and yaxis2_columns != "None" else "",
+                title=yaxis2_title
+                if yaxis2_columns is not None and yaxis2_columns != "None"
+                else "",
                 exponentformat="SI",
                 overlaying="y",
                 side="right",
@@ -113,8 +125,10 @@ def main(
     yaxis_columns: List[str],
     yaxis2_columns: List[str]
 ):
-    dfs = map(lambda path: pd.read_csv(path, encoding=encoding, engine="python"), file_path_list)
-    # df = pd.read_csv(file_path, encoding=encoding)
+    dfs = map(
+        lambda path: pd.read_csv(path, encoding=encoding, engine="python"),
+        file_path_list
+    )
     plot(
         dfs,
         file_path_list,
