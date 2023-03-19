@@ -17,8 +17,8 @@ def create_graph_datalist(
     time_format: str = "%m/%d/%Y %H:%M:%S",
     use_elapsed: bool = False,
     with_markers: bool = False,
-    yaxis_columns: List[str] = None,
-    yaxis2_columns: List[str] = None,
+    yaxis_columns: List[str] = [],
+    yaxis2_columns: List[str] = [],
     minimum_required_value: int = None,
 ) -> List[go.Scatter]:
 
