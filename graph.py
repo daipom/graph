@@ -111,7 +111,12 @@ def plot(
     )
 
     if not to_jupyter:
-        py.plot(fig)
+        fig.show(
+            config=dict(
+                showLink=True,
+                modeBarButtonsToAdd=["hoverclosest", "hovercompare"]
+            )
+        )
     else:
         py.init_notebook_mode(connected=True)
         py.iplot(fig)
