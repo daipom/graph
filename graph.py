@@ -134,6 +134,7 @@ def plot(
     if not to_jupyter:
         fig.show(
             config=dict(
+                editable=True,
                 showLink=True,
                 modeBarButtonsToAdd=["hoverclosest", "hovercompare"]
             )
