@@ -94,7 +94,7 @@ def plot(
     fig = go.Figure(
         data=data,
         layout=go.Layout(
-            title="",
+            title=pathlist[0] if len(pathlist) == 1 else "",
             xaxis=dict(title="Elapsed [sec]" if use_elapsed else "X"),
             yaxis=dict(title=yaxis_title, exponentformat="SI"),
             yaxis2=dict(
