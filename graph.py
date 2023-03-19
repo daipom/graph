@@ -154,9 +154,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("pathlist", help="Path list of csv files to read.", nargs="+")
     parser.add_argument("--encoding", help="Encoding option of dataframe. Default: utf-8", type=str, default="utf-8")
-    parser.add_argument("--is-x-time", help="To handle the first column as time value. Default: True", type=lambda s: s.lower() in ["true", "1", "yes"], default="True")
-    parser.add_argument("--time-format", help="Time format for the first column. Default: %%m/%%d/%%Y %%H:%%M:%%S", type=str, default="%%m/%%d/%%Y %%H:%%M:%%S")
-    parser.add_argument("--elapsed", help="To convert the first column to elapsed time. Default: False", type=lambda s: s.lower() in ["true", "1", "yes"], default="False")
+    parser.add_argument("--time-format", help="Time format for the first column.  Can't be used with '--not-timeseries'. Default: %%m/%%d/%%Y %%H:%%M:%%S", type=str, default="%%m/%%d/%%Y %%H:%%M:%%S")
+    parser.add_argument("--elapsed", help="Convert the first column to elapsed time. Can't be used with '--not-timeseries'.", action="store_true")
+    parser.add_argument("--not-timeseries", help="Doesn't handle the first column as time value, and plot a simple scatter graph.", action="store_true")
     parser.add_argument("--yaxis-title", help="Title of Y axis. Default: Bytes", type=str, default="Bytes")
     parser.add_argument("--yaxis2-title", help="Title of Y axis2.", type=str, default="None")
     parser.add_argument("--yaxis-columns", help="If column names are specified here, then plot those columns to yaxis1. If this and 'yaxis2_columns' are not specified, then plot all columns except the first as X to yaxis1.", nargs="*")
@@ -167,7 +167,7 @@ if __name__ == '__main__':
     main(
         args.pathlist,
         args.encoding,
-        args.is_x_time,
+        not args.not_timeseries,
         args.time_format,
         args.elapsed,
         args.yaxis_title,
