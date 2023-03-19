@@ -38,14 +38,22 @@ $ ./graph.py -h
 $ ./graph.py sample/simple.csv --yaxis-title Value
 ```
 
+<img src="sample/simple.png"/>
+
 ```console
 $ ./graph.py sample/resource.csv --yaxis-columns Memory --yaxis2-title "ProcessorTime(%)" --yaxis2-columns ProcessorTime
 ```
+
+<img src="sample/2-yaxis.png"/>
 
 ```console
 $ ./graph.py sample/simple.csv sample/resource.csv --graph-title "Plot multiple files" --yaxis-columns Memory --yaxis2-title "Other values" --yaxis2-columns ProcessorTime Value1 Value2 Value3
 ```
 
+<img src="sample/multiple-files.png"/>
+
 ```console
 $ ./graph.py sample/not-timeseries.csv --not-timeseries --yaxis-title Value
 ```
+
+<img src="sample/not-timeseries.png"/>
