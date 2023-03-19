@@ -19,6 +19,7 @@ def create_graph_datalist(
     with_markers: bool = False,
     yaxis_columns: List[str] = None,
     yaxis2_columns: List[str] = None,
+    minimum_required_value: int = None,
 ) -> List[go.Scatter]:
 
     def strptime(v):
@@ -53,6 +54,7 @@ def create_graph_datalist(
                 opacity=0.50,
                 mode=mode,
             ) for column_name in list(df.columns)[1:]
+            if minimum_required_value is None or df[column_name].max() >= minimum_required_value
         ]
     else:
         return [
@@ -63,6 +65,7 @@ def create_graph_datalist(
                 opacity=0.50,
                 mode=mode,
             ) for column_name in yaxis_columns
+            if minimum_required_value is None or df[column_name].max() >= minimum_required_value
         ] + [
             go.Scatter(
                 x=x_values,
@@ -72,6 +75,7 @@ def create_graph_datalist(
                 mode=mode,
                 yaxis="y2",
             ) for column_name in yaxis2_columns
+            if minimum_required_value is None or df[column_name].max() >= minimum_required_value
         ]
 
 
@@ -87,6 +91,7 @@ def plot(
     yaxis2_title: str = "",
     yaxis_columns: List[str] = None,
     yaxis2_columns: List[str] = None,
+    minimum_required_value: int = None,
 ):
     data = []
     for df, path in zip(dfs, pathlist):
@@ -99,6 +104,7 @@ def plot(
             with_markers=with_markers,
             yaxis_columns=yaxis_columns if yaxis_columns else [],
             yaxis2_columns=yaxis2_columns if yaxis2_columns else [],
+            minimum_required_value=minimum_required_value,
         )
 
     fig = go.Figure(
@@ -143,6 +149,7 @@ def main(
     yaxis_columns: List[str],
     yaxis2_columns: List[str],
     with_markers: bool,
+    minimum_required_value: int,
 ):
     dfs = map(
         lambda path: pd.read_csv(path, encoding=encoding, engine="python"),
@@ -159,6 +166,7 @@ def main(
         yaxis_columns=yaxis_columns,
         yaxis2_columns=yaxis2_columns,
         with_markers=with_markers,
+        minimum_required_value=minimum_required_value,
     )
 
 
@@ -174,6 +182,7 @@ if __name__ == '__main__':
     parser.add_argument("--yaxis2-title", help="Title of Y axis2.", type=str, default="None")
     parser.add_argument("--yaxis-columns", help="If column names are specified here, then plot those columns to yaxis1. If this and 'yaxis2_columns' are not specified, then plot all columns except the first as X to yaxis1.", nargs="*")
     parser.add_argument("--yaxis2-columns", help="If column names are specified here, then plot those columns to yaxis2.", nargs="*")
+    parser.add_argument("--minimum-required-value", help="Exclude columns with the max value less than this value. Default: None", type=int, default=None)
 
     args = parser.parse_args()
 
@@ -188,4 +197,5 @@ if __name__ == '__main__':
         args.yaxis_columns,
         args.yaxis2_columns,
         args.with_markers,
+        args.minimum_required_value,
     )
