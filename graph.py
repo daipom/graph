@@ -92,6 +92,7 @@ def plot(
     to_jupyter: bool = False,
     use_elapsed: bool = False,
     with_markers: bool = False,
+    graph_title: str = None,
     yaxis_title: str = "Bytes",
     yaxis2_title: str = "",
     yaxis_columns: List[str] = None,
@@ -112,10 +113,13 @@ def plot(
             minimum_required_value=minimum_required_value,
         )
 
+    if graph_title is None:
+        graph_title = pathlist[0] if len(pathlist) == 1 else ""
+
     fig = go.Figure(
         data=data,
         layout=go.Layout(
-            title=pathlist[0] if len(pathlist) == 1 else "",
+            title=graph_title,
             xaxis=dict(title="Elapsed [sec]" if use_elapsed else "X"),
             yaxis=dict(title=yaxis_title, exponentformat="SI"),
             yaxis2=dict(
@@ -150,6 +154,7 @@ def main(
     is_x_time: bool,
     time_format: str,
     use_elapsed: bool,
+    graph_title: str,
     yaxis_title: str,
     yaxis2_title: str,
     yaxis_columns: List[str],
@@ -167,6 +172,7 @@ def main(
         is_x_time=is_x_time,
         time_format=time_format,
         use_elapsed=use_elapsed,
+        graph_title=graph_title,
         yaxis_title=yaxis_title,
         yaxis2_title=yaxis2_title,
         yaxis_columns=yaxis_columns,
@@ -184,6 +190,7 @@ if __name__ == '__main__':
     parser.add_argument("--elapsed", help="Convert the first column to elapsed time. Can't be used with '--not-timeseries'.", action="store_true")
     parser.add_argument("--with-markers", help="Display lines with markers.", action="store_true")
     parser.add_argument("--not-timeseries", help="Doesn't handle the first column as time value, and plot a simple scatter graph.", action="store_true")
+    parser.add_argument("--graph-title", help="Title of graph. By default, the filepath is used as a title with a single pathlist.", type=str, default=None)
     parser.add_argument("--yaxis-title", help="Title of Y axis. Default: Bytes", type=str, default="Bytes")
     parser.add_argument("--yaxis2-title", help="Title of Y axis2.", type=str, default="None")
     parser.add_argument("--yaxis-columns", help="If column names are specified here, then plot those columns to yaxis1. If this and 'yaxis2_columns' are not specified, then plot all columns except the first as X to yaxis1.", nargs="*")
@@ -198,6 +205,7 @@ if __name__ == '__main__':
         not args.not_timeseries,
         args.time_format,
         args.elapsed,
+        args.graph_title,
         args.yaxis_title,
         args.yaxis2_title,
         args.yaxis_columns,
