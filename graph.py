@@ -120,7 +120,7 @@ def plot(
         data=data,
         layout=go.Layout(
             title=graph_title,
-            xaxis=dict(title="Elapsed [sec]" if use_elapsed else "X"),
+            xaxis=dict(title="Elapsed [sec]" if use_elapsed else dfs[0].columns[0]),
             yaxis=dict(title=yaxis_title, exponentformat="SI"),
             yaxis2=dict(
                 title=yaxis2_title
@@ -162,10 +162,10 @@ def main(
     with_markers: bool,
     minimum_required_value: int,
 ):
-    dfs = map(
-        lambda path: pd.read_csv(path, encoding=encoding, engine="python"),
-        file_path_list
-    )
+    dfs = [
+        pd.read_csv(path, encoding=encoding, engine="python")
+        for path in file_path_list
+    ]
     plot(
         dfs,
         file_path_list,
