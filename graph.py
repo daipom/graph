@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import argparse
 from datetime import datetime
 import pandas as pd
@@ -146,10 +147,10 @@ def main(
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("path_list", help="Path list of csv files to read.", nargs="*")
+    parser.add_argument("path_list", help="Path list of csv files to read.", nargs="+")
     parser.add_argument("--encoding", help="Encoding option of dataframe. Default: utf-16", type=str, default="utf-16")
     parser.add_argument("--is_x_time", help="To handle the first column as time value. Default: True", type=lambda s: s.lower() in ["true", "1", "yes"], default="True")
-    parser.add_argument("--time_format", help="Time format for the first column. Default: %m/%d/%Y %H:%M:%S", type=str, default="%m/%d/%Y %H:%M:%S")
+    parser.add_argument("--time_format", help="Time format for the first column. Default: %%m/%%d/%%Y %%H:%%M:%%S", type=str, default="%%m/%%d/%%Y %%H:%%M:%%S")
     parser.add_argument("--elapsed", help="To convert the first column to elapsed time. Default: False", type=lambda s: s.lower() in ["true", "1", "yes"], default="False")
     parser.add_argument("--yaxis_title", help="Title of Y axis. Default: Bytes", type=str, default="Bytes")
     parser.add_argument("--yaxis2_title", help="Title of Y axis2.", type=str, default="None")
