@@ -25,6 +25,9 @@ def create_graph_datalist(
     def strptime(v):
         return datetime.strptime(v, time_format)
 
+    def scatter_name(column_name):
+        return f"{path}: {column_name}" if path else column_name
+
     x_values = None
     if is_x_time:
         if use_elapsed:
@@ -50,7 +53,7 @@ def create_graph_datalist(
             go.Scatter(
                 x=x_values,
                 y=df[column_name],
-                name=path + ": " + column_name,
+                name=scatter_name(column_name),
                 opacity=0.50,
                 mode=mode,
             ) for column_name in list(df.columns)[1:]
@@ -61,7 +64,7 @@ def create_graph_datalist(
             go.Scatter(
                 x=x_values,
                 y=df[column_name],
-                name=path + ": " + column_name,
+                name=scatter_name(column_name),
                 opacity=0.50,
                 mode=mode,
             ) for column_name in yaxis_columns
@@ -70,7 +73,7 @@ def create_graph_datalist(
             go.Scatter(
                 x=x_values,
                 y=df[column_name],
-                name=path + ": " + column_name,
+                name=scatter_name(column_name),
                 opacity=0.50,
                 mode=mode,
                 yaxis="y2",
@@ -97,7 +100,7 @@ def plot(
     for df, path in zip(dfs, pathlist):
         data += create_graph_datalist(
             df,
-            path=path,
+            path=None if len(pathlist) == 1 else path,
             is_x_time=is_x_time,
             time_format=time_format,
             use_elapsed=use_elapsed,
