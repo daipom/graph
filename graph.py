@@ -16,8 +16,9 @@ def create_graph_datalist(
     is_x_time: bool = True,
     time_format: str = "%m/%d/%Y %H:%M:%S",
     use_elapsed: bool = False,
+    with_markers: bool = False,
     yaxis_columns: List[str] = None,
-    yaxis2_columns: List[str] = None
+    yaxis2_columns: List[str] = None,
 ) -> List[go.Scatter]:
 
     def strptime(v):
@@ -37,6 +38,10 @@ def create_graph_datalist(
     else:
         x_values = df.iloc[:, 0]
 
+    mode = "lines"
+    if with_markers:
+        mode += "+markers"
+
     is_col1_empty = yaxis_columns is None or not any(yaxis_columns)
     is_col2_empty = yaxis2_columns is None or not any(yaxis2_columns)
     if is_col1_empty and is_col2_empty:
@@ -46,6 +51,7 @@ def create_graph_datalist(
                 y=df[column_name],
                 name=path + ": " + column_name,
                 opacity=0.50,
+                mode=mode,
             ) for column_name in list(df.columns)[1:]
         ]
     else:
@@ -55,6 +61,7 @@ def create_graph_datalist(
                 y=df[column_name],
                 name=path + ": " + column_name,
                 opacity=0.50,
+                mode=mode,
             ) for column_name in yaxis_columns
         ] + [
             go.Scatter(
@@ -62,7 +69,8 @@ def create_graph_datalist(
                 y=df[column_name],
                 name=path + ": " + column_name,
                 opacity=0.50,
-                yaxis="y2"
+                mode=mode,
+                yaxis="y2",
             ) for column_name in yaxis2_columns
         ]
 
@@ -74,10 +82,11 @@ def plot(
     time_format: str = "%m/%d/%Y %H:%M:%S",
     to_jupyter: bool = False,
     use_elapsed: bool = False,
+    with_markers: bool = False,
     yaxis_title: str = "Bytes",
     yaxis2_title: str = "",
     yaxis_columns: List[str] = None,
-    yaxis2_columns: List[str] = None
+    yaxis2_columns: List[str] = None,
 ):
     data = []
     for df, path in zip(dfs, pathlist):
@@ -87,6 +96,7 @@ def plot(
             is_x_time=is_x_time,
             time_format=time_format,
             use_elapsed=use_elapsed,
+            with_markers=with_markers,
             yaxis_columns=yaxis_columns if yaxis_columns else [],
             yaxis2_columns=yaxis2_columns if yaxis2_columns else [],
         )
@@ -131,7 +141,8 @@ def main(
     yaxis_title: str,
     yaxis2_title: str,
     yaxis_columns: List[str],
-    yaxis2_columns: List[str]
+    yaxis2_columns: List[str],
+    with_markers: bool,
 ):
     dfs = map(
         lambda path: pd.read_csv(path, encoding=encoding, engine="python"),
@@ -146,7 +157,8 @@ def main(
         yaxis_title=yaxis_title,
         yaxis2_title=yaxis2_title,
         yaxis_columns=yaxis_columns,
-        yaxis2_columns=yaxis2_columns
+        yaxis2_columns=yaxis2_columns,
+        with_markers=with_markers,
     )
 
 
@@ -156,6 +168,7 @@ if __name__ == '__main__':
     parser.add_argument("--encoding", help="Encoding option of dataframe. Default: utf-8", type=str, default="utf-8")
     parser.add_argument("--time-format", help="Time format for the first column.  Can't be used with '--not-timeseries'. Default: %%m/%%d/%%Y %%H:%%M:%%S", type=str, default="%%m/%%d/%%Y %%H:%%M:%%S")
     parser.add_argument("--elapsed", help="Convert the first column to elapsed time. Can't be used with '--not-timeseries'.", action="store_true")
+    parser.add_argument("--with-markers", help="Display lines with markers.", action="store_true")
     parser.add_argument("--not-timeseries", help="Doesn't handle the first column as time value, and plot a simple scatter graph.", action="store_true")
     parser.add_argument("--yaxis-title", help="Title of Y axis. Default: Bytes", type=str, default="Bytes")
     parser.add_argument("--yaxis2-title", help="Title of Y axis2.", type=str, default="None")
@@ -173,5 +186,6 @@ if __name__ == '__main__':
         args.yaxis_title,
         args.yaxis2_title,
         args.yaxis_columns,
-        args.yaxis2_columns
+        args.yaxis2_columns,
+        args.with_markers,
     )
