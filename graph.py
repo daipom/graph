@@ -87,8 +87,8 @@ def plot(
             is_x_time=is_x_time,
             time_format=time_format,
             use_elapsed=use_elapsed,
-            yaxis_columns=yaxis_columns,
-            yaxis2_columns=yaxis2_columns
+            yaxis_columns=yaxis_columns if yaxis_columns else [],
+            yaxis2_columns=yaxis2_columns if yaxis2_columns else [],
         )
 
     fig = go.Figure(
