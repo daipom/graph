@@ -53,7 +53,7 @@ $ ./graph.py sample/simple.csv sample/resource.csv --graph-title "Plot multiple 
 <img src="sample/multiple-files.png"/>
 
 ```console
-$ ./graph.py sample/not-timeseries.csv --not-timeseries --yaxis-title Value
+$ ./graph.py sample/not-timeseries.csv --not-timeseries --yaxis-title Value --with-markers
 ```
 
 <img src="sample/not-timeseries.png"/>
