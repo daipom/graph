@@ -68,6 +68,7 @@ def create_graph_datalist(
                 opacity=0.50,
                 mode=mode,
             ) for column_name in yaxis_columns
+            if column_name in df.columns
             if minimum_required_value is None or df[column_name].max() >= minimum_required_value
         ] + [
             go.Scatter(
@@ -78,6 +79,7 @@ def create_graph_datalist(
                 mode=mode,
                 yaxis="y2",
             ) for column_name in yaxis2_columns
+            if column_name in df.columns
             if minimum_required_value is None or df[column_name].max() >= minimum_required_value
         ]
 
