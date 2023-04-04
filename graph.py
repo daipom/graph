@@ -155,7 +155,9 @@ def plot(
     )
 
     if not to_jupyter:
-        fig.show(
+        fig.write_html(
+            file="temp-plot.html",
+            auto_open=True,
             config=dict(
                 editable=True,
                 showLink=True,
